@@ -1,0 +1,15 @@
+Load_Data = LOAD '/home/manas/Downloads/Datasets/Pokemon.csv' USING PigStorage(',') AS(Sno:int,Name:chararray,Type1:chararray,Type2:chararray,Total:int,HP:int,Attack:int,Defense:int,SpAtk:int,SpDef:int,Speed:int);
+dump Load_Data;
+selected_list = FILTER Load_Data BY Defense>55;
+gourp_selcted_list = Group selected_list All;
+count_selcted_list = foreach gourp_selcted_list GENERATE COUNT(selected_list);
+random_include1 = foreach selected_list GENERATE RANDOM(),Name,Type1,Type2,Total,HP,Attack,Defense,SpAtk,SpDef,Speed;
+random_include2 = foreach selected_list GENERATE RANDOM(),Name,Type1,Type2,Total,HP,Attack,Defense,SpAtk,SpDef,Speed;
+random1_desending = ORDER random_include1 BY $0 DESC;
+random2_desending = ORDER random_include2 BY $0 DESC;
+limit_data_random1_desending = LIMIT random1_desending 5;
+limit_data_random2_desending = LIMIT random2_desending 5;
+filter_only_name1 = foreach limit_data_random1_desending Generate ($1,HP);
+filter_only_name2 = foreach limit_data_random2_desending Generate ($1,HP);
+dump filter_only_name1;
+dump filter_only_name2;
